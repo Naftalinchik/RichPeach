@@ -2,12 +2,15 @@
 #include <iostream>
 #include <conio.h>
 #include <queue>
-/aazzaza
+#include <fstream>
+
 using namespace std;
 
 bool GM;
 const int w = 20, h = 20; //размеры поля
 int field[h][w];
+//ifstream in;
+//ofstream out;
 /*
 0 - поле
 1 - змея
@@ -16,7 +19,8 @@ int field[h][w];
 */
 int xh, yh, xf, yf, xt, yt;
 enum eD { STOP = 0, LEFT, RIGHT, UP, DOWN };
-eD dir;
+eD dir,dirp;
+//char ch;
 
 struct point
 {
@@ -27,7 +31,7 @@ struct point
 queue <point> snake;
 point head;
 
-bool empty(int x,int y)
+bool empty(int x, int y)
 {
 	if (field[y][x])
 		return false;
@@ -49,6 +53,19 @@ void fspawn()
 			field[yf][xf] = 2;
 			break;
 		}
+	}
+}
+
+eD invers(eD d) {
+	switch(d){
+		case LEFT:
+			return RIGHT;
+		case RIGHT:
+			return LEFT;
+		case UP:
+			return DOWN;
+		case DOWN:
+			return UP;
 	}
 }
 
@@ -81,7 +98,7 @@ void Draw()
 			switch (field[i][j])
 			{
 			case 0:
-				cout << ' ';
+				cout << " ";
 				break;
 			case 3:
 				cout << '#';
@@ -100,40 +117,42 @@ void Draw()
 
 void Input() {
 	if (_kbhit()) {
-		switch (_getch()) {
+		ch = _getch();
+		switch (ch) {
 		case 'a':
-			dir = LEFT;
+			dirp = LEFT;
 			break;
 		case 'w':
-			dir = UP;
+			dirp = UP;
 			break;
 		case 'd':
-			dir = RIGHT;
+			dirp = RIGHT;
 			break;
 		case 's':
-			dir = DOWN;
+			dirp = DOWN;
 			break;
 		}
+		if (dirp != invers(dir)) dir = dirp;
 	}
 }
 
-void Logic() 
+void Logic()
 {
-	switch (dir) 
-	{
-	case LEFT:
-		xh--;
-		break;
-	case RIGHT:
-		xh++;
-		break;
-	case UP:
-		yh--;
-		break;
-	case DOWN:
-		yh++;
-		break;
-	}
+		switch (dir)
+		{
+		case LEFT:
+			xh--;
+			break;
+		case RIGHT:
+			xh++;
+			break;
+		case UP:
+			yh--;
+			break;
+		case DOWN:
+			yh++;
+			break;
+		}
 	head.x = xh;
 	head.y = yh;
 	if (empty(xh, yh))
@@ -159,6 +178,7 @@ void Logic()
 
 int main()
 {
+	//in.open("log.log");
 	while (true)
 	{
 		Setup();
